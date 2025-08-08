@@ -100,5 +100,22 @@
             redirectToApp();
         }, 5000);
     </script>
+    <script>
+    // Check if this is an OAuth redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    if (code) {
+        // This is an OAuth redirect, try to close the window
+        setTimeout(() => {
+            try {
+                window.close();
+            } catch (e) {
+                // If window.close() fails, show instructions
+                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h2>✅ Authentication Successful!</h2><p>You can now close this window and return to your app.</p></div>';
+            }
+        }, 2000);
+    }
+</script>
 </body>
 </html>
