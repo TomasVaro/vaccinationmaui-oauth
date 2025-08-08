@@ -1,62 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>OAuth Redirect - Vaccination MAUI</title>
-<style>
-  body { font-family: Arial, sans-serif; text-align:center; padding:50px; background:#f5f5f5; }
-  .container { background:#fff; padding:30px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); max-width:500px; margin:auto;}
-  .success { color:#28a745; font-size:24px; margin-bottom:20px; }
-  .message { color:#666; margin-bottom:20px; }
-  .close-btn {
-    background:#007bff; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px; margin:5px;
-  }
-  .close-btn:hover { background:#0056b3; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Redirect - Vaccination MAUI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .success {
+            color: #28a745;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: #dc3545;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .close-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .close-btn:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
-<div class="container" id="content">
-  <div class="success">✅ Authentication Successful!</div>
-  <div class="message">
-    You have successfully signed in with Google.<br />
-    Click one of the buttons below to return to your app.
-  </div>
-  <button class="close-btn" onclick="redirectToApp()">Return to App</button>
-  <button class="close-btn" onclick="closeWindow()">Close Window</button>
-</div>
+    <div class="container">
+        <div id="status" class="success">✅ Authentication Successful!</div>
+        <div id="message" class="message">
+            You have successfully signed in with Google.<br>
+            Click the button below to return to your app.
+        </div>
+        <button class="close-btn" id="returnBtn">Return to App</button>
+        <button class="close-btn" id="closeBtn">Close Window</button>
+    </div>
 
-<script>
-  // Parse query params
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
-  const error = params.get('error');
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
 
-  function isMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
+        const statusEl = document.getElementById('status');
+        const messageEl = document.getElementById('message');
+        const returnBtn = document.getElementById('returnBtn');
+        const closeBtn = document.getElementById('closeBtn');
 
-  function redirectToApp() {
-    if (code) {
-      window.location.href = `vaccinationmaui://oauth2redirect?code=${encodeURIComponent(code)}`;
-    } else {
-      alert('No authorization code found.');
-    }
-  }
+        if (error) {
+            statusEl.textContent = '❌ Authentication Failed';
+            statusEl.className = 'error';
+            messageEl.textContent = `Error: ${error}`;
+        }
 
-  function closeWindow() {
-    window.close();
-  }
+        function redirectToApp() {
+            if (!code) {
+                alert('No authorization code found.');
+                return;
+            }
+            const appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
 
-  if (error) {
-    document.querySelector('.success').textContent = '❌ Authentication Failed';
-    document.querySelector('.success').style.color = '#dc3545';
-    document.querySelector('.message').textContent = `Error: ${error}`;
-  } else if (code && isMobile()) {
-    // On mobile, redirect immediately to app
-    redirectToApp();
-  }
-  // else on desktop, show UI to user
-</script>
+            if (isMobile) {
+                // Optional: fallback to store if app not installed
+                const storeLink = /Android/i.test(navigator.userAgent)
+                    ? 'https://play.google.com/store/apps/details?id=com.yourcompany.vaccinationmaui'
+                    : 'https://apps.apple.com/app/idXXXXXXXXX';
+                window.location = appLink;
+                setTimeout(() => { window.location = storeLink; }, 1500);
+            } else {
+                window.location = appLink;
+            }
+        }
+
+        function attemptClose() {
+            try {
+                window.close();
+                setTimeout(showManualCloseMessage, 500);
+            } catch {
+                showManualCloseMessage();
+            }
+        }
+
+        function showManualCloseMessage() {
+            document.querySelector('.container').innerHTML = `
+                <div class="success">✅ Authentication Complete</div>
+                <div class="message">You can now close this tab or return to your app.</div>
+            `;
+        }
+
+        // Bind buttons
+        returnBtn.addEventListener('click', redirectToApp);
+        closeBtn.addEventListener('click', attemptClose);
+
+        // Hide "Close Window" button on mobile (it won't work)
+        if (isMobile) {
+            closeBtn.style.display = 'none';
+        } else {
+            // On desktop, try to auto-close if popup
+            setTimeout(attemptClose, 1500);
+        }
+    </script>
 </body>
 </html>
