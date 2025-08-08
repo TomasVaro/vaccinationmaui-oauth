@@ -24,6 +24,11 @@
             font-size: 24px;
             margin-bottom: 20px;
         }
+        .error {
+            color: #dc3545;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
         .message {
             color: #666;
             margin-bottom: 20px;
@@ -45,77 +50,65 @@
 </head>
 <body>
     <div class="container">
-        <div class="success">✅ Authentication Successful!</div>
-        <div class="message">
+        <div id="status" class="success">✅ Authentication Successful!</div>
+        <div id="message" class="message">
             You have successfully signed in with Google.<br>
             Click one of the buttons below to return to your app.
         </div>
         <button class="close-btn" onclick="redirectToApp()">Return to App</button>
-        <button class="close-btn" onclick="closeWindow()">Close Window</button>
+        <button class="close-btn" onclick="attemptClose()">Close Window</button>
     </div>
 
     <script>
-        // Extract authorization code from URL if present
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         const error = urlParams.get('error');
-        
+
+        const statusEl = document.getElementById('status');
+        const messageEl = document.getElementById('message');
+
         if (error) {
-            document.querySelector('.success').textContent = '❌ Authentication Failed';
-            document.querySelector('.success').style.color = '#dc3545';
-            document.querySelector('.message').textContent = `Error: ${error}`;
+            statusEl.textContent = '❌ Authentication Failed';
+            statusEl.className = 'error';
+            messageEl.textContent = `Error: ${error}`;
         }
-        
-        // Log the authorization code (for debugging)
-        if (code) {
-            console.log('Authorization code received:', code);
-        }
-        
+
         function redirectToApp() {
-            // Try multiple redirect methods
-            try {
-                // Method 1: Custom URL scheme
-                window.location.href = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code || '');
-            } catch (e) {
-                try {
-                    // Method 2: Try to close window
-                    window.close();
-                } catch (e2) {
-                    // Method 3: Show instructions
-                    alert('Please close this window manually and return to your app.');
-                }
+            if (code) {
+                // Redirect to your custom URI scheme
+                window.location.href = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
+            } else {
+                alert('No authorization code found.');
             }
         }
-        
-        function closeWindow() {
+
+        function attemptClose() {
             try {
                 window.close();
             } catch (e) {
-                alert('Please close this window manually and return to your app.');
+                // If blocked, show instructions
+                showManualCloseMessage();
             }
         }
-        
-        // Auto-redirect after 5 seconds
+
+        function showManualCloseMessage() {
+            document.querySelector('.container').innerHTML = `
+                <div class="success">✅ Authentication Complete</div>
+                <div class="message">You can now close this tab or return to your app.</div>
+            `;
+        }
+
+        // Auto-redirect to app after 2 seconds if on mobile (most OAuth flows)
         setTimeout(() => {
-            redirectToApp();
-        }, 5000);
-    </script>
-    <script>
-    // Check if this is an OAuth redirect
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    
-    if (code) {
-        // This is an OAuth redirect, try to close the window
-        setTimeout(() => {
-            try {
-                window.close();
-            } catch (e) {
-                // If window.close() fails, show instructions
-                document.body.innerHTML = '<div style="text-align:center;padding:50px;"><h2>✅ Authentication Successful!</h2><p>You can now close this window and return to your app.</p></div>';
+            if (code) {
+                redirectToApp();
             }
         }, 2000);
-    }
-</script>
+
+        // Also try auto-close (desktop popup case)
+        setTimeout(() => {
+            attemptClose();
+        }, 3000);
+    </script>
 </body>
 </html>
