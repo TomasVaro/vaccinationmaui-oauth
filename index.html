@@ -53,22 +53,22 @@
         <div id="status" class="success">✅ Authentication Successful!</div>
         <div id="message" class="message">
             You have successfully signed in with Google.<br>
-            Click one of the buttons below to return to your app.
+            Click the button below to return to your app.
         </div>
-        <button class="close-btn" onclick="redirectToApp()">Return to App</button>
-        <button class="close-btn" onclick="attemptClose()">Close Window</button>
+        <button class="close-btn" id="returnBtn">Return to App</button>
+        <button class="close-btn" id="closeBtn">Close Window</button>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         const error = urlParams.get('error');
+        const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
 
         const statusEl = document.getElementById('status');
         const messageEl = document.getElementById('message');
-
-        // Detect mobile (basic check)
-        const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+        const returnBtn = document.getElementById('returnBtn');
+        const closeBtn = document.getElementById('closeBtn');
 
         if (error) {
             statusEl.textContent = '❌ Authentication Failed';
@@ -77,19 +77,29 @@
         }
 
         function redirectToApp() {
-            if (code) {
-                window.location.href = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
-            } else {
+            if (!code) {
                 alert('No authorization code found.');
+                return;
+            }
+            const appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
+
+            if (isMobile) {
+                // Optional: fallback to store if app not installed
+                const storeLink = /Android/i.test(navigator.userAgent)
+                    ? 'https://play.google.com/store/apps/details?id=com.yourcompany.vaccinationmaui'
+                    : 'https://apps.apple.com/app/idXXXXXXXXX';
+                window.location = appLink;
+                setTimeout(() => { window.location = storeLink; }, 1500);
+            } else {
+                window.location = appLink;
             }
         }
 
         function attemptClose() {
             try {
                 window.close();
-                // If window.close() is blocked, the script continues
                 setTimeout(showManualCloseMessage, 500);
-            } catch (e) {
+            } catch {
                 showManualCloseMessage();
             }
         }
@@ -101,12 +111,15 @@
             `;
         }
 
-        // Auto-behaviour
+        // Bind buttons
+        returnBtn.addEventListener('click', redirectToApp);
+        closeBtn.addEventListener('click', attemptClose);
+
+        // Hide "Close Window" button on mobile (it won't work)
         if (isMobile) {
-            // Mobile: immediately go back to app
-            setTimeout(redirectToApp, 500);
+            closeBtn.style.display = 'none';
         } else {
-            // Desktop: try auto-close if possible
+            // On desktop, try to auto-close if popup
             setTimeout(attemptClose, 1500);
         }
     </script>
