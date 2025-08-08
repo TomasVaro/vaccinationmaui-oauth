@@ -82,15 +82,25 @@
                 return;
             }
             const appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
-
+        
             if (isMobile) {
-                // Optional: fallback to store if app not installed
+                // Try opening the app by setting href on a hidden iframe first (works better on Android)
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = appLink;
+                document.body.appendChild(iframe);
+        
+                // Fallback: after 1.5s, redirect to store if app not installed
                 const storeLink = /Android/i.test(navigator.userAgent)
                     ? 'https://play.google.com/store/apps/details?id=com.yourcompany.vaccinationmaui'
                     : 'https://apps.apple.com/app/idXXXXXXXXX';
-                window.location = appLink;
-                setTimeout(() => { window.location = storeLink; }, 1500);
+        
+                setTimeout(() => {
+                    window.location = storeLink;
+                    document.body.removeChild(iframe);
+                }, 1500);
             } else {
+                // Desktop: simply redirect as before
                 window.location = appLink;
             }
         }
@@ -125,3 +135,4 @@
     </script>
 </body>
 </html>
+
