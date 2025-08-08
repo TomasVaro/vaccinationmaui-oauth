@@ -49,7 +49,7 @@
             You have successfully signed in with Google.<br>
             You can now close this window and return to your Vaccination MAUI app.
         </div>
-        <button class="close-btn" onclick="window.close()">Close Window</button>
+        <button class="close-btn" onclick="closeWindow()">Close Window</button>
     </div>
 
     <script>
@@ -69,10 +69,20 @@
             console.log('Authorization code received:', code);
         }
         
-        // Auto-close after 5 seconds
+        function closeWindow() {
+            // Try multiple methods to close the window
+            try {
+                window.close();
+            } catch (e) {
+                // If window.close() fails, try to redirect back to the app
+                window.location.href = 'vaccinationmaui://oauth2redirect';
+            }
+        }
+        
+        // Auto-close after 3 seconds
         setTimeout(() => {
-            window.close();
-        }, 5000);
+            closeWindow();
+        }, 3000);
     </script>
 </body>
 </html>
