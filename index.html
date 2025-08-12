@@ -81,7 +81,7 @@
                 alert('No authorization code found.');
                 return;
             }
-            const appLink = 'vaccinationmaui://oauth?code=' + encodeURIComponent(code);
+            const appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
         
             if (isMobile) {
                 // Try opening the app by setting href on a hidden iframe first (works better on Android)
@@ -135,5 +135,6 @@
     </script>
 </body>
 </html>
+
 
 
