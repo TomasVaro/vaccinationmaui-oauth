@@ -127,7 +127,7 @@
 
         // Hide "Close Window" button on mobile (it won't work)
         if (isMobile) {
-            closeBtn.style.display = 'none';
+            redirectToApp();
         } else {
             // On desktop, try to auto-close if popup
             setTimeout(attemptClose, 1500);
@@ -135,6 +135,7 @@
     </script>
 </body>
 </html>
+
 
 
 
