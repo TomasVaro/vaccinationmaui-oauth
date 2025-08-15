@@ -59,68 +59,65 @@
         <button class="close-btn" id="closeBtn">Close Window</button>
     </div>
 
-    <script> 
-        const urlParams = new URLSearchParams(window.location.search); 
-        const code = urlParams.get('code'); 
-        const error = urlParams.get('error'); 
-        const ping = urlParams.get('ping'); 
-        // For testing 
-        const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent); 
-        const statusEl = document.getElementById('status'); 
-        const messageEl = document.getElementById('message'); 
-        const returnBtn = document.getElementById('returnBtn'); 
-        const closeBtn = document.getElementById('closeBtn'); 
-        if (error) 
-        { 
-            statusEl.textContent = '❌ Authentication Failed'; 
-            statusEl.className = 'error'; 
-            messageEl.textContent = Error: ${error}; 
-        } 
-        function redirectToApp() 
-        { 
-            let appLink; 
-            if (code) 
-            { 
-                appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code); 
-            } 
-            else if (ping) 
-            { 
-                appLink = 'vaccinationmaui://oauth2redirect?ping=' + encodeURIComponent(ping); 
-            } 
-            else 
-            { 
-                appLink = 'vaccinationmaui://oauth2redirect'; 
-            } 
-            window.location.href = appLink; 
-            // Optional: show a hint if nothing happened after 2s 
-            setTimeout(() => { 
-                    document.querySelector('.container').innerHTML += '<div class="message">If the app didn’t open, please switch to it manually.</div>'; 
-            }, 2000); 
-        } 
-        function attemptClose() 
-        { 
-            try { window.close(); 
-                 setTimeout(showManualCloseMessage, 500); 
-                } catch { showManualCloseMessage(); }
-        } 
-        function showManualCloseMessage() 
-        { 
-            document.querySelector('.container').innerHTML = <div class="success">✅ Authentication Complete</div> <div class="message">You can now close this tab or return to your app.</div> ; 
-        } 
-        // Bind buttons 
-        returnBtn.addEventListener('click', redirectToApp); 
-        closeBtn.addEventListener('click', attemptClose); 
-        // Always try to open the app if on mobile OR testing with ?ping=1 
-        if (isMobile || ping) 
-        { 
-            redirectToApp(); 
-        } 
-        else 
-        { 
-            // On desktop, try to auto-close 
-            if popup setTimeout(attemptClose, 1500);
-        } 
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+
+        const statusEl = document.getElementById('status');
+        const messageEl = document.getElementById('message');
+        const returnBtn = document.getElementById('returnBtn');
+        const closeBtn = document.getElementById('closeBtn');
+
+        if (error) {
+            statusEl.textContent = '❌ Authentication Failed';
+            statusEl.className = 'error';
+            messageEl.textContent = `Error: ${error}`;
+        }
+
+        function redirectToApp() {
+            if (!code) {
+                alert('No authorization code found.');
+                return;
+            }
+            const appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
+            window.location.href = appLink;
+        
+            // Optional: show a hint if nothing happened after 2s
+            setTimeout(() => {
+                document.querySelector('.container').innerHTML += 
+                    '<div class="message">If the app didn’t open, please switch to it manually.</div>';
+            }, 2000);
+        }
+
+        function attemptClose() {
+            try {
+                window.close();
+                setTimeout(showManualCloseMessage, 500);
+            } catch {
+                showManualCloseMessage();
+            }
+        }
+
+        function showManualCloseMessage() {
+            document.querySelector('.container').innerHTML = `
+                <div class="success">✅ Authentication Complete</div>
+                <div class="message">You can now close this tab or return to your app.</div>
+            `;
+        }
+
+        // Bind buttons
+        returnBtn.addEventListener('click', redirectToApp);
+        closeBtn.addEventListener('click', attemptClose);
+
+        // Hide "Close Window" button on mobile (it won't work)
+        if (isMobile) {
+            redirectToApp();
+        } else {
+            // On desktop, try to auto-close if popup
+            setTimeout(attemptClose, 1500);
+        }
     </script>
 </body>
 </html>
-
