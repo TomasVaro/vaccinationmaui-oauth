@@ -81,7 +81,8 @@
                 alert('No authorization code found.');
                 return;
             }
-            const appLink = 'vaccinationmaui://oauth2redirect?code=' + encodeURIComponent(code);
+            const appLink = 'intent://oauth2redirect?code=' + encodeURIComponent(code) +
+                '#Intent;scheme=vaccinationmaui;package=com.tomasvaro.vaccinationmaui;end';
             window.location.href = appLink;
         
             // Optional: show a hint if nothing happened after 2s
@@ -121,8 +122,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
