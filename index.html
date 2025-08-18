@@ -4,60 +4,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>OAuth Redirect - Vaccination MAUI</title>
+  <script>if(/Android/i.test(navigator.userAgent)){document.documentElement.classList.add('android');}</script>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background:#f5f5f5; margin:0 }
+    body { font-family: Arial, sans-serif; text-align:center; padding:50px; background:#f5f5f5; margin:0 }
     .container { background:#fff; padding:30px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); max-width:500px; margin:40px auto }
     .success { color:#28a745; font-size:24px; margin-bottom:20px }
-    .error { color:#dc3545; font-size:24px; margin-bottom:20px }
     .message { color:#666; margin-bottom:20px }
     .btn { background:#007bff; color:#fff; border:0; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px; margin:5px }
     .btn:hover { background:#0056b3 }
-    /* Hidden by default; we only show content on non-Android */
-    body.hidden { display:none }
+    /* Hide only on Android to avoid UI flash there */
+    html.android body { display:none }
   </style>
   <script>
     (function () {
       var params = window.location.search || "";
       var deepLink = "vaccinationmaui://oauth2redirect" + params;
-      var ua = navigator.userAgent || "";
-      var isAndroid = /Android/i.test(ua);
+      var isAndroid = document.documentElement.classList.contains("android");
 
       if (isAndroid) {
-        // ANDROID: no UI flash – redirect before paint
-        document.documentElement.classList.add("android");
-        document.body.classList.add("hidden");
-        // Use replace (no history entry)
+        // ANDROID: redirect immediately, no flash
         window.location.replace(deepLink);
-        // Fallback: show a minimal message if app doesn’t open quickly
+        // Fallback if app doesn't open quickly
         setTimeout(function () {
-          document.body.classList.remove("hidden");
-          document.body.innerHTML = "<div class='container'><div class='message'>If your app did not open, please install it and try again.</div></div>";
+          document.documentElement.classList.remove("android");
+          document.body.innerHTML =
+            "<div class='container'><div class='message'>If your app did not open, please install it and try again.</div></div>";
         }, 1200);
       } else {
-        // WINDOWS (and others): show UI immediately, attempt deep link in background
-        document.body.classList.remove("hidden");
-        // Try to open app shortly after load without hiding UI
-        window.addEventListener("load", function () {
-          setTimeout(function () { window.location.href = deepLink; }, 200);
-        });
-        // Wire up buttons after DOM is ready
+        // WINDOWS/others: show UI and also attempt deep link
         window.addEventListener("DOMContentLoaded", function () {
-          var returnBtn = document.getElementById("returnBtn");
-          var closeBtn = document.getElementById("closeBtn");
-          if (returnBtn) returnBtn.onclick = function () { window.location.href = deepLink; };
-          if (closeBtn) closeBtn.onclick = function () { window.close(); };
+          document.getElementById("returnBtn").onclick = function () { window.location.href = deepLink; };
+          document.getElementById("closeBtn").onclick = function () { window.close(); };
+          setTimeout(function () { window.location.href = deepLink; }, 300);
         });
       }
     })();
   </script>
 </head>
-<body class="hidden">
+<body>
   <div class="container">
-    <div id="status" class="success">✅ Authentication Successful!</div>
-    <div id="message" class="message">
-      You have successfully signed in with Google.<br>
-      Click the button below to return to your app.
-    </div>
+    <div class="success">✅ Authentication Successful!</div>
+    <div class="message">You have successfully signed in with Google.<br>Click the button below to return to your app.</div>
     <button class="btn" id="returnBtn">Return to App</button>
     <button class="btn" id="closeBtn">Close Window</button>
   </div>
