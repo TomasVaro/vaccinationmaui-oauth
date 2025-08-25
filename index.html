@@ -31,11 +31,11 @@
             "<div class='container'><div class='message'>If your app did not open, please install it and try again.</div></div>";
         }, 1200);
       } else {
-        // WINDOWS/others: show UI and also attempt deep link
+        // WINDOWS/others: show UI and redirect immediately
         window.addEventListener("DOMContentLoaded", function () {
           document.getElementById("returnBtn").onclick = function () { window.location.href = deepLink; };
-          // Auto-attempt deep link after a short delay
-          setTimeout(function () { window.location.href = deepLink; }, 300);
+          // Redirect immediately - no delay needed
+          window.location.href = deepLink;
         });
       }
     })();
