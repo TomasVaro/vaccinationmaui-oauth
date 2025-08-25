@@ -12,6 +12,11 @@
     .message { color:#666; margin-bottom:20px }
     .btn { background:#007bff; color:#fff; border:0; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px; margin:5px }
     .btn:hover { background:#0056b3 }
+    .close-btn { background:#666; }
+    .close-btn:hover { background:#555; }
+    .status { margin-top:15px; padding:10px; border-radius:4px; font-size:14px; display:none; }
+    .status.success { background-color:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+    .status.info { background-color:#d1ecf1; color:#0c5460; border:1px solid #bee5eb; }
     /* Hide only on Android to avoid UI flash there */
     html.android body { display:none }
   </style>
@@ -20,6 +25,68 @@
       var params = window.location.search || "";
       var deepLink = "vaccinationmaui://oauth2redirect" + params;
       var isAndroid = document.documentElement.classList.contains("android");
+
+      // Function to show status messages
+      function showStatus(message, type = 'info') {
+        var statusDiv = document.getElementById('status');
+        if (statusDiv) {
+          statusDiv.textContent = message;
+          statusDiv.className = 'status ' + type;
+          statusDiv.style.display = 'block';
+        }
+      }
+
+      // Function to close window with multiple fallback methods
+      function closeWindow() {
+        showStatus('Attempting to close window...', 'info');
+        
+        // Method 1: Try window.close()
+        try {
+          if (window.close()) {
+            showStatus('Window closed successfully!', 'success');
+            return;
+          }
+        } catch (e) {
+          console.log('window.close() failed:', e);
+        }
+        
+        // Method 2: Try to close using window.opener if available
+        if (window.opener && !window.opener.closed) {
+          try {
+            window.opener.close();
+            window.close();
+            showStatus('Window closed via opener!', 'success');
+            return;
+          } catch (e) {
+            console.log('window.opener.close() failed:', e);
+          }
+        }
+        
+        // Method 3: Try to focus the opener and close this window
+        if (window.opener) {
+          try {
+            window.opener.focus();
+            window.close();
+            showStatus('Window closed and focus returned to opener!', 'success');
+            return;
+          } catch (e) {
+            console.log('focus and close failed:', e);
+          }
+        }
+        
+        // Method 4: Try to minimize the window
+        try {
+          window.moveTo(0, 0);
+          window.resizeTo(1, 1);
+          showStatus('Window minimized. You can close it manually.', 'info');
+          return;
+        } catch (e) {
+          console.log('minimize failed:', e);
+        }
+        
+        // Method 5: Final fallback - show instructions
+        showStatus('Please close this window manually using Alt+F4 or the X button.', 'info');
+      }
 
       if (isAndroid) {
         // ANDROID: redirect immediately, no flash
@@ -34,7 +101,7 @@
         // WINDOWS/others: show UI and also attempt deep link
         window.addEventListener("DOMContentLoaded", function () {
           document.getElementById("returnBtn").onclick = function () { window.location.href = deepLink; };
-          document.getElementById("closeBtn").onclick = function () { window.close(); };
+          document.getElementById("closeBtn").onclick = function () { closeWindow(); };
           setTimeout(function () { window.location.href = deepLink; }, 300);
         });
       }
@@ -46,7 +113,8 @@
     <div class="success">✅ Authentication Successful!</div>
     <div class="message">You have successfully signed in with Google.<br>Click the button below to return to your app.</div>
     <button class="btn" id="returnBtn">Return to App</button>
-    <button class="btn" id="closeBtn">Close Window</button>
+    <button class="btn close-btn" id="closeBtn">Close Window</button>
+    <div id="status" class="status"></div>
   </div>
 </body>
 </html>
