@@ -14,8 +14,6 @@
     .message { color:#666; margin-bottom:20px }
     .btn { background:#007bff; color:#fff; border:0; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px; margin:5px }
     .btn:hover { background:#0056b3 }
-    .btn-secondary { background:#6c757d; color:#fff; border:0; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px; margin:5px }
-    .btn-secondary:hover { background:#545b62 }
     /* Hide only on Android to avoid UI flash there */
     html.android body { display:none }
   </style>
@@ -29,43 +27,28 @@
       var urlParams = new URLSearchParams(params);
       var error = urlParams.get('error');
       var code = urlParams.get('code');
-      var state = urlParams.get('state');
       
       // Determine the message to show
       var statusClass = 'success';
       var statusText = '✅ Authentication Successful!';
       var messageText = 'You have successfully signed in.<br>Click the button below to return to your app.';
       var buttonText = 'Return to App';
-      var showSecondaryButton = false;
-      var secondaryButtonText = '';
-      var isFacebookAuth = false;
       
       if (error === 'access_denied') {
         statusClass = 'cancelled';
         statusText = '❌ Authentication Cancelled';
-        messageText = 'The sign-in process was cancelled by the user.<br>You can return to your app or close this tab.';
+        messageText = 'The sign-in process was cancelled by the user.<br>You can close this tab and return to your app.';
         buttonText = 'Return to App';
-        showSecondaryButton = true;
-        secondaryButtonText = 'Close Tab';
-        
-        // Check if this is Facebook auth
-        if (state && state.includes('facebook_auth')) {
-          isFacebookAuth = true;
-        }
       } else if (error) {
         statusClass = 'error';
         statusText = '❌ Authentication Error';
         messageText = 'An error occurred during the sign-in process.<br>Please try again.';
         buttonText = 'Try Again';
-        showSecondaryButton = true;
-        secondaryButtonText = 'Close Tab';
       } else if (!code) {
         statusClass = 'error';
         statusText = '❌ Invalid Response';
         messageText = 'No authentication code received.<br>Please try again.';
         buttonText = 'Try Again';
-        showSecondaryButton = true;
-        secondaryButtonText = 'Close Tab';
       }
 
       if (isAndroid) {
@@ -86,39 +69,7 @@
           document.getElementById("messageText").innerHTML = messageText;
           document.getElementById("returnBtn").innerHTML = buttonText;
           
-          // Show/hide secondary button based on result
-          var secondaryBtn = document.getElementById("secondaryBtn");
-          if (showSecondaryButton && secondaryBtn) {
-            secondaryBtn.style.display = 'inline-block';
-            secondaryBtn.innerHTML = secondaryButtonText;
-          }
-          
           document.getElementById("returnBtn").onclick = function () { window.location.href = deepLink; };
-          if (secondaryBtn) {
-            secondaryBtn.onclick = function () { 
-              // Try to close the window/tab
-              try {
-                // Method 1: Try window.close()
-                window.close();
-                
-                // Method 2: If window.close() doesn't work, try to go back
-                setTimeout(function() {
-                  if (!window.closed) {
-                    if (window.history.length > 1) {
-                      window.history.back();
-                    } else {
-                      // Method 3: If can't go back, redirect to app
-                      window.location.href = deepLink;
-                    }
-                  }
-                }, 100);
-                
-              } catch (e) {
-                // Method 4: If all else fails, redirect to app
-                window.location.href = deepLink;
-              }
-            };
-          }
           
           // Redirect immediately - no delay needed
           window.location.href = deepLink;
@@ -132,7 +83,6 @@
     <div id="statusText" class="success">✅ Authentication Successful!</div>
     <div id="messageText" class="message">You have successfully signed in.<br>Click the button below to return to your app.</div>
     <button class="btn" id="returnBtn">Return to App</button>
-    <button class="btn-secondary" id="secondaryBtn" style="display:none">Close Tab</button>
   </div>
 </body>
 </html>
