@@ -83,7 +83,19 @@
           
           document.getElementById("returnBtn").onclick = function () { window.location.href = deepLink; };
           if (secondaryBtn) {
-            secondaryBtn.onclick = function () { window.close(); };
+            secondaryBtn.onclick = function () { 
+              // Try multiple methods to close the window
+              try {
+                window.close();
+              } catch (e) {
+                // If window.close() fails, try to go back or redirect
+                if (window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  window.location.href = deepLink;
+                }
+              }
+            };
           }
           
           // Redirect immediately - no delay needed
