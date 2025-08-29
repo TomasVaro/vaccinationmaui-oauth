@@ -29,6 +29,7 @@
       var urlParams = new URLSearchParams(params);
       var error = urlParams.get('error');
       var code = urlParams.get('code');
+      var state = urlParams.get('state');
       
       // Determine the message to show
       var statusClass = 'success';
@@ -37,6 +38,7 @@
       var buttonText = 'Return to App';
       var showSecondaryButton = false;
       var secondaryButtonText = '';
+      var isFacebookAuth = false;
       
       if (error === 'access_denied') {
         statusClass = 'cancelled';
@@ -45,6 +47,11 @@
         buttonText = 'Return to App';
         showSecondaryButton = true;
         secondaryButtonText = 'Close Tab';
+        
+        // Check if this is Facebook auth
+        if (state && state.includes('facebook_auth')) {
+          isFacebookAuth = true;
+        }
       } else if (error) {
         statusClass = 'error';
         statusText = '❌ Authentication Error';
