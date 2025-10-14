@@ -30,8 +30,9 @@
       
       // Determine the message to show
       var statusClass = 'success';
-      var statusText = '✅ Autentisering lyckades!';
-      var messageText = 'Du har framgångsrikt loggat in på Vaccinationsjournalen.<br>Klicka på knappen nedan för att gå tillbaka till appen.<br>';
+      var statusTextSwe = '✅ Autentisering lyckades!';
+      var messageTextSwe = 'Du har framgångsrikt loggat in på Vaccinationsjournalen.<br>Klicka på knappen nedan för att gå tillbaka till appen.';
+      var buttonTextSwe = 'Åter till appen';
       var statusText = '✅ Authentication Successful!';
       var messageText = 'You have successfully signed in to Vaccination Journal.<br>Click the button below to return to the app.';
       var buttonText = 'Return to App/Åter till appen';
@@ -66,6 +67,10 @@
         // WINDOWS/others: show UI and redirect immediately
         window.addEventListener("DOMContentLoaded", function () {
           // Update the UI based on the OAuth result
+          document.getElementById("statusText").className = statusClass;
+          document.getElementById("statusText").innerHTML = statusTextSwe;
+          document.getElementById("messageText").innerHTML = messageTextSwe;
+          document.getElementById("returnBtn").innerHTML = buttonTextSwe;
           document.getElementById("statusText").className = statusClass;
           document.getElementById("statusText").innerHTML = statusText;
           document.getElementById("messageText").innerHTML = messageText;
