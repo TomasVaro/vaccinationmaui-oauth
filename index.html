@@ -22,13 +22,17 @@
       var params = window.location.search || "";
       var deepLink = "vaccinationmaui://oauth2redirect" + params;
       var isAndroid = document.documentElement.classList.contains("android");
+
+      // ✅ Detect language
+      var userLang = navigator.language || navigator.userLanguage;
+      var isSwedish = userLang.toLowerCase().startsWith("sv");
       
       // Parse URL parameters to determine the OAuth result
       var urlParams = new URLSearchParams(params);
       var error = urlParams.get('error');
       var code = urlParams.get('code');
       
-      // Determine the message to show
+      // Determine the English + Swedish message to show
       var statusClass = 'success';
       var statusTextSwe = '✅ Autentisering lyckades!';
       var messageTextSwe = 'Du har framgångsrikt loggat in på Vaccinationsjournalen.<br>Klicka på knappen nedan för att gå tillbaka till appen.';
@@ -67,10 +71,18 @@
         // WINDOWS/others: show UI and redirect immediately
         window.addEventListener("DOMContentLoaded", function () {
           // Update the UI based on the OAuth result
-          document.getElementById("statusText").className = statusClass;
-          document.getElementById("statusText").innerHTML = statusText;
-          document.getElementById("messageText").innerHTML = messageText;
-          document.getElementById("returnBtn").innerHTML = buttonText;
+          document.getElementById("statusText").className = statusClass;          
+
+          // ✅ Select language
+          if (isSwedish) {
+            document.getElementById("statusText").innerHTML = statusTextSwe;
+            document.getElementById("messageText").innerHTML = messageTextSwe;
+            document.getElementById("returnBtn").innerHTML = buttonTextSwe;
+          } else {
+            document.getElementById("statusText").innerHTML = statusText;
+            document.getElementById("messageText").innerHTML = messageText;
+            document.getElementById("returnBtn").innerHTML = buttonText;
+          }
           
           document.getElementById("returnBtn").onclick = function () { window.location.href = deepLink; };
           
@@ -89,7 +101,3 @@
   </div>
 </body>
 </html>
-
-
-
-
