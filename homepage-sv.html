@@ -22,27 +22,31 @@
             color: white;
             padding: 40px 20px;
             text-align: center;
+            position: relative; /* För att möjliggöra absolut positionering av bilden */
         }
 
         .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative; /* För att placera bilden relativt header-content */
         }
 
         .header-image {
             width: 100px;
             height: 100px;
+            position: absolute; /* Placera bilden oberoende av texten */
+            left: 100px; /* Avstånd från vänstra kanten, justerat för att vara mittemellan */
+            top: 50%; /* Centrera vertikalt */
+            transform: translateY(-50%); /* Justera vertikal centrering */
         }
 
         .header-text {
-            display: flex; /* Lägg till flex för att stapla elementen vertikalt */
-            flex-direction: column; /* Stapla elementen vertikalt */
-            align-items: center; /* Centrera elementen horisontellt */
-            text-align: center; /* Centrera texten */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centrera text och knapp horisontellt */
+            text-align: center;
+            max-width: 600px; /* Begränsa bredden för balans */
+            margin: 0 auto; /* Centrera header-text i mitten av sidan */
         }
 
         .header h1 {
@@ -175,17 +179,23 @@
             }
 
             .header-content {
+                display: flex;
                 flex-direction: column;
                 gap: 20px;
-            }
-
-            .header-text {
-                align-items: center; /* Säkerställ centrering på mobila enheter */
             }
 
             .header-image {
                 width: 80px;
                 height: 80px;
+                position: static; /* Återställ till normal flöde på mobila enheter */
+                margin: 0 auto; /* Centrera bilden */
+                transform: none; /* Ta bort transform */
+            }
+
+            .header-text {
+                align-items: center;
+                margin: 0 auto;
+                max-width: 90%; /* Säkerställ att texten inte blir för bred */
             }
 
             .intro h2 {
