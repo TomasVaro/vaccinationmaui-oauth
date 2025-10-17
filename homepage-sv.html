@@ -39,7 +39,10 @@
         }
 
         .header-text {
-            text-align: left;
+            display: flex; /* Lägg till flex för att stapla elementen vertikalt */
+            flex-direction: column; /* Stapla elementen vertikalt */
+            align-items: center; /* Centrera elementen horisontellt */
+            text-align: center; /* Centrera texten */
         }
 
         .header h1 {
@@ -177,7 +180,7 @@
             }
 
             .header-text {
-                text-align: center;
+                align-items: center; /* Säkerställ centrering på mobila enheter */
             }
 
             .header-image {
