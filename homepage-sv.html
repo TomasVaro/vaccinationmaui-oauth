@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaccinationsjournalen - Håll koll på dina vaccinationer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .intro h2 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .intro p {
+            font-size: 1.2em;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1.1em;
+            }
+
+            .intro h2 {
+                font-size: 2em;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>💉 Vaccinationsjournalen</h1>
+        <p>Din digitala följeslagare för vaccinations&shy;hantering</p>
+        <a href="#" class="download-btn">Ladda ner appen</a>
+    </header>
+
+    <div class="container">
+        <section class="intro">
+            <h2>Håll koll på dina vaccinationer</h2>
+            <p>Vaccinationsjournalen är den kompletta lösningen för att hantera vaccinationer för dig och din familj. Få påminnelser, håll ordning på alla doser och få tillgång till viktig information – allt på ett ställe.</p>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Registrera vaccinationer</h3>
+                <p>Registrera vaccinationer för dig och dina familjemedlemmar. Få automatiska rekommendationer om när nästa dos bör tas.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Lista och exportera</h3>
+                <p>Visa alla registrerade vaccinationer i en tydlig lista. Skriv ut eller spara som PDF-fil för att dela med vårdgivare.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✏️</div>
+                <h3>Redigera uppgifter</h3>
+                <p>Gjort ett misstag? Inga problem! Redigera enkelt befintliga vaccinationsposter när som helst.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💊</div>
+                <h3>Vaccininformation</h3>
+                <p>Utforska existerande vacciner och lär dig vilka sjukdomar de skyddar mot. Komplett databas för dina behov.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🦠</div>
+                <h3>Sjukdomsinformation</h3>
+                <p>Sök efter sjukdomar och upptäck vilka vacciner som finns tillgängliga för att skydda dig och din familj.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                <h3>Familjehantering</h3>
+                <p>Lägg till och hantera profiler för alla familjemedlemmar. Alla vaccinationer samlade på ett ställe.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Kontakta oss</h3>
+                <p>Har du frågor eller förslag? Skicka enkelt meddelanden direkt i appen med feedback eller supportfrågor.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>Patient Fass integration</h3>
+                <p>Direktlänkar till Patient Fass för detaljerad medicinsk information om varje vaccin.</p>
+            </div>
+        </section>
+    </div>
+
+    <section class="cta-section">
+        <h2>Redo att börja?</h2>
+        <p>Ladda ner Vaccinationsjournalen idag och ta kontroll över din familjes hälsa</p>
+        <a href="#" class="download-btn">Ladda ner nu</a>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 Vaccinationsjournalen. Alla rättigheter förbehållna.</p>
+    </footer>
+</body>
+</html>
