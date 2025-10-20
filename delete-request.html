@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kontakt | Contact</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radering av konto – Vaccinationsjournalen</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; max-width: 600px; }
-    label { display: block; margin-top: 15px; }
-    input, textarea { width: 100%; padding: 10px; margin-top: 5px; }
-    button { margin-top: 20px; padding: 12px 20px; cursor: pointer; }
-    .lang-btn { float: right; margin-top: -30px; }
+    body { font-family: Arial, sans-serif; background: #f5f7fa; margin: 0; padding: 0; display: flex; justify-content: center; }
+    .container { max-width: 600px; background: white; margin: 40px; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    h1 { color: #333; margin-bottom: 10px; }
+    p { color: #555; line-height: 1.6; }
+    label { font-weight: bold; margin-top: 15px; display: block; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
+    button { background: #007bff; color: white; border: none; padding: 12px 20px; margin-top: 20px; cursor: pointer; border-radius: 5px; font-size: 16px; }
+    button:hover { background: #0056b3; }
+    .lang-btn { background: #555; float: right; padding: 8px 16px; margin-top: -25px; }
     .hidden { display: none; }
+    .warning { background: #ffe6e6; border-left: 6px solid red; padding: 15px; margin: 20px 0; color: #990000; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <button class="lang-btn" onclick="toggleLanguage()">English</button>
 
-  <!-- Språkknapp -->
-  <button class="lang-btn" onclick="toggleLanguage()">English</button>
+    <!-- Swedish -->
+    <div id="sv">
+      <h1>Radering av konto</h1>
+      <p>Denna sida gäller begäran om radering av konto i <strong>Vaccinationsjournalen</strong>.</p>
+      <div class="warning">
+        ⚠️ <strong>Varning:</strong> När kontot och all tillhörande data raderas kan det inte återställas.
+        Detta inkluderar alla vaccinationer, användaruppgifter och kopplade personer.
+      </div>
 
-  <!-- Svensk version -->
-  <div id="sv">
-    <h1>Kontakta oss</h1>
-    <p>Fyll i formuläret nedan så återkommer vi så snart som möjligt.</p>
-    <form action="https://api.web3forms.com/submit" method="POST">
-      <input type="hidden" name="access_key" value="3f7aafe0-0c25-4d9b-80eb-13175bbf55cf">
-      <label>Namn</label>
-      <input type="text" name="name" required>
+      <form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+        <label>För- och efternamn</label>
+        <input type="text" name="name" required>
 
-      <label>E-post</label>
-      <input type="email" name="email" required>
+        <label>E-post (måste matcha kontot)</label>
+        <input type="email" name="email" required>
 
-      <label>Meddelande</label>
-      <textarea name="message" rows="5" required></textarea>
+        <label>Skriv: ”Jag vill radera mitt konto”</label>
+        <textarea name="message" rows="4" placeholder="Jag vill radera mitt konto och all data permanent." required></textarea>
 
-      <button type="submit">Skicka</button>
-    </form>
-  </div>
+        <button type="submit">Begär radering</button>
+      </form>
+    </div>
 
-  <!-- English version -->
-  <div id="en" class="hidden">
-    <h1>Contact Us</h1>
-    <p>Fill out the form below and we will get back to you as soon as possible.</p>
-    <form action="https://api.web3forms.com/submit" method="POST">
-      <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-      <label>Name</label>
-      <input type="text" name="name" required>
+    <!-- English -->
+    <div id="en" class="hidden">
+      <h1>Account Deletion</h1>
+      <p>This page is used to request deletion of your account in <strong>Vaccination Journal</strong>.</p>
+      <div class="warning">
+        ⚠️ <strong>Warning:</strong> Once your account and all related data are deleted, they cannot be recovered.
+        This includes all vaccinations, user information and connected profiles.
+      </div>
 
-      <label>Email</label>
-      <input type="email" name="email" required>
+      <form action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+        <label>Full name</label>
+        <input type="text" name="name" required>
 
-      <label>Message</label>
-      <textarea name="message" rows="5" required></textarea>
+        <label>Email (must match account)</label>
+        <input type="email" name="email" required>
 
-      <button type="submit">Send</button>
-    </form>
+        <label>Write: “I want to delete my account”</label>
+        <textarea name="message" rows="4" placeholder="I want to delete my account and all data permanently." required></textarea>
+
+        <button type="submit">Request deletion</button>
+      </form>
+    </div>
   </div>
 
   <script>
@@ -62,15 +77,9 @@
       const en = document.getElementById('en');
       const btn = document.querySelector('.lang-btn');
 
-      if (sv.classList.contains('hidden')) {
-        sv.classList.remove('hidden');
-        en.classList.add('hidden');
-        btn.textContent = 'English';
-      } else {
-        sv.classList.add('hidden');
-        en.classList.remove('hidden');
-        btn.textContent = 'Svenska';
-      }
+      sv.classList.toggle('hidden');
+      en.classList.toggle('hidden');
+      btn.textContent = sv.classList.contains('hidden') ? 'Svenska' : 'English';
     }
   </script>
 </body>
