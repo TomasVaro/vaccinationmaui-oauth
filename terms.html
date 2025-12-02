@@ -98,7 +98,7 @@
         </ul>
 
         <h2>4. Integritet och data</h2>
-        <p>Din integritet är viktig för oss. Vi behandlar personuppgifter i enlighet med gällande dataskyddslagstiftning. Läs vår <a href="https://tomasvaro.github.io/vaccinationmaui-oauth/privacy.html">Integritetspolicy</a> för information om hur vi hanterar dina data.</p>
+        <p>Din integritet är viktig för oss. Vi behandlar personuppgifter i enlighet med gällande dataskyddslagstiftning. Läs vår <a href="privacy.html" id="privacy-link-content">Integritetspolicy</a> för information om hur vi hanterar dina data.</p>
 
         <h2>5. Ingen medicinsk rådgivning</h2>
         <p>Informationen i Tjänsten är allmän och inte anpassad efter din personliga hälsa eller medicinska situation. Eventuella påminnelser eller visning av vaccinationsintervall baseras på offentligt tillgängliga källor och ska inte betraktas som medicinska rekommendationer. Tjänsten får inte användas som underlag för medicinska beslut. Kontakta alltid vårdpersonal vid frågor om vaccination eller hälsa.</p>
@@ -151,7 +151,7 @@
         </ul>
 
         <h2>4. Privacy and Data</h2>
-        <p>Your privacy is important. We process personal data in accordance with applicable data protection laws. See our <a href="https://tomasvaro.github.io/vaccinationmaui-oauth/privacy.html">Privacy Policy</a> for more information.</p>
+        <p>Your privacy is important. We process personal data in accordance with applicable data protection laws. >See our <a href="privacy.html" id="privacy-link-content">Privacy Policy</a> for more information.</p>
 
         <h2>5. No Medical Advice</h2>
         <p>The information provided by the Service is general in nature and not tailored to your health or medical condition. Any reminders or vaccination interval displays are based on publicly available sources and must not be considered medical recommendations. The Service must not be used as a basis for medical decisions. Always consult healthcare professionals.</p>
@@ -184,12 +184,12 @@
     </div>
 
     <script>
-        // Språkhantering
+        // Language management
         function setLanguage(lang) {
             const svEls = document.querySelectorAll('.lang-sv');
             const enEls = document.querySelectorAll('.lang-en');
             const btn = document.querySelector('.lang-toggle-btn');
-
+    
             if (lang === 'sv') {
                 svEls.forEach(e => e.classList.remove('hidden'));
                 enEls.forEach(e => e.classList.add('hidden'));
@@ -201,33 +201,67 @@
                 btn.textContent = 'Svenska';
                 document.documentElement.lang = 'en';
             }
-
-            localStorage.setItem('vj_terms_lang', lang);
+    
+            // Save language selection (same key for both pages)
+            localStorage.setItem('vj_lang', lang);
+            
+            // Update navigation links with language parameters
+            updateNavigationLinks(lang);
         }
 
+        function updateNavigationLinks(lang) {
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (href.includes('privacy.html') || href.includes('terms.html'))) {
+                    // Handle relative links correctly
+                    if (href.startsWith('http')) {
+                        // Absolute URL - update query parameter
+                        const url = new URL(href);
+                        url.searchParams.set('lang', lang);
+                        link.href = url.toString();
+                    } else {
+                        // Relative URL - add query parameter
+                        const separator = href.includes('?') ? '&' : '?';
+                        link.href = href + separator + 'lang=' + lang;
+                    }
+                }
+            });
+    
+            // Uppdatera också länken i innehållet om den finns
+            const contentLink = document.getElementById('privacy-link-content');
+            if (contentLink) {
+                const href = contentLink.getAttribute('href');
+                if (href && href.includes('privacy.html')) {
+                    const separator = href.includes('?') ? '&' : '?';
+                    contentLink.href = href + separator + 'lang=' + lang;
+                }
+            }
+        }
+    
         function toggleLanguage() {
             const current = document.documentElement.lang === 'sv' ? 'sv' : 'en';
             setLanguage(current === 'sv' ? 'en' : 'sv');
         }
-
-        // Auto-välj språk vid första besök
+    
+        // Auto-select language on first visit
         (function initLanguage() {
-            // 1) Försök läsa ?lang=sv eller ?lang=en från URL
+            // 1) Try reading ?lang=sv or ?lang=en from URL
             const params = new URLSearchParams(window.location.search);
             const urlLang = params.get('lang');
             if (urlLang === 'sv' || urlLang === 'en') {
                 setLanguage(urlLang);
                 return;
             }
-
-            // 2) Om inget i URL – använd sparat val
-            const saved = localStorage.getItem('vj_terms_lang');
+    
+            // 2) If nothing in URL – use saved selection (same key for both pages)
+            const saved = localStorage.getItem('vj_lang');
             if (saved === 'sv' || saved === 'en') {
                 setLanguage(saved);
                 return;
             }
-
-            // 3) Annars – auto från webbläsaren
+    
+            // 3) Otherwise – auto from the browser
             const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
             if (browserLang.startsWith('sv')) {
                 setLanguage('sv');
