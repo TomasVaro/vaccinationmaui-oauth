@@ -305,5 +305,27 @@
     <footer class="footer">
         <p>&copy; 2025 Vaccinationsjournalen. Alla rättigheter förbehållna.</p>
     </footer>
+    
+    <script>
+        function smartDownload() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+    
+            // Android → Google Play
+            if (/android/i.test(ua)) {
+                window.location.href = "https://play.google.com/store/apps/details?id=com.tomasvaro.vaccinationmaui&hl=sv";
+                return false;
+            }
+    
+            // Windows (desktop/laptop) → Microsoft Store
+            if (/windows nt/i.test(ua)) {
+                window.location.href = "https://apps.microsoft.com/detail/9pnbz664n9tg?hl=sv-SE&gl=SE";
+                return false;
+            }
+    
+            // Övriga plattformar (iOS, macOS m.m.) – här kan du välja vad som är bäst. Just nu skickar vi till Google Play som "standard".
+            window.location.href = "https://play.google.com/store/apps/details?id=com.tomasvaro.vaccinationmaui&hl=sv";
+            return false;
+        }
+    </script>    
 </body>
 </html>
