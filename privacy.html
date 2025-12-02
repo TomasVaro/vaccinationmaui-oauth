@@ -133,74 +133,81 @@
     </div>
 
     <script>
-    // Language management
-    function setLanguage(lang) {
-        const svEls = document.querySelectorAll('.lang-sv');
-        const enEls = document.querySelectorAll('.lang-en');
-        const btn = document.querySelector('.lang-toggle-btn');
-
-        if (lang === 'sv') {
-            svEls.forEach(e => e.classList.remove('hidden'));
-            enEls.forEach(e => e.classList.add('hidden'));
-            btn.textContent = 'English';
-            document.documentElement.lang = 'sv';
-        } else {
-            svEls.forEach(e => e.classList.add('hidden'));
-            enEls.forEach(e => e.classList.remove('hidden'));
-            btn.textContent = 'Svenska';
-            document.documentElement.lang = 'en';
-        }
-
-        // Save language selection (same key for both pages)
-        localStorage.setItem('vj_lang', lang);
-        
-        // Update navigation links with language parameters
-        updateNavigationLinks(lang);
-    }
-
-    function updateNavigationLinks(lang) {
-        const navLinks = document.querySelectorAll('nav a');
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && (href.includes('privacy.html') || href.includes('terms.html'))) {
-                // Remove any existing lang parameter and add a new one
-                const url = new URL(href, window.location.origin);
-                url.searchParams.set('lang', lang);
-                link.href = url.pathname + '?' + url.searchParams.toString();
+        // Language management
+        function setLanguage(lang) {
+            const svEls = document.querySelectorAll('.lang-sv');
+            const enEls = document.querySelectorAll('.lang-en');
+            const btn = document.querySelector('.lang-toggle-btn');
+    
+            if (lang === 'sv') {
+                svEls.forEach(e => e.classList.remove('hidden'));
+                enEls.forEach(e => e.classList.add('hidden'));
+                btn.textContent = 'English';
+                document.documentElement.lang = 'sv';
+            } else {
+                svEls.forEach(e => e.classList.add('hidden'));
+                enEls.forEach(e => e.classList.remove('hidden'));
+                btn.textContent = 'Svenska';
+                document.documentElement.lang = 'en';
             }
-        });
-    }
-
-    function toggleLanguage() {
-        const current = document.documentElement.lang === 'sv' ? 'sv' : 'en';
-        setLanguage(current === 'sv' ? 'en' : 'sv');
-    }
-
-    // Auto-select language on first visit
-    (function initLanguage() {
-        // 1) Try reading ?lang=sv or ?lang=en from URL
-        const params = new URLSearchParams(window.location.search);
-        const urlLang = params.get('lang');
-        if (urlLang === 'sv' || urlLang === 'en') {
-            setLanguage(urlLang);
-            return;
+    
+            // Save language selection (same key for both pages)
+            localStorage.setItem('vj_lang', lang);
+            
+            // Update navigation links with language parameters
+            updateNavigationLinks(lang);
         }
 
-        // 2) If nothing in URL – use saved selection (same key for both pages)
-        const saved = localStorage.getItem('vj_lang');
-        if (saved === 'sv' || saved === 'en') {
-            setLanguage(saved);
-            return;
+        function updateNavigationLinks(lang) {
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (href.includes('privacy.html') || href.includes('terms.html'))) {
+                    // Handle relative links correctly
+                    if (href.startsWith('http')) {
+                        // Absolute URL - update query parameter
+                        const url = new URL(href);
+                        url.searchParams.set('lang', lang);
+                        link.href = url.toString();
+                    } else {
+                        // Relative URL - add query parameter
+                        const separator = href.includes('?') ? '&' : '?';
+                        link.href = href + separator + 'lang=' + lang;
+                    }
+                }
+            });
         }
-
-        // 3) Otherwise – auto from the browser
-        const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-        if (browserLang.startsWith('sv')) {
-            setLanguage('sv');
-        } else {
-            setLanguage('en');
+    
+        function toggleLanguage() {
+            const current = document.documentElement.lang === 'sv' ? 'sv' : 'en';
+            setLanguage(current === 'sv' ? 'en' : 'sv');
         }
-    })();
-</script>
+    
+        // Auto-select language on first visit
+        (function initLanguage() {
+            // 1) Try reading ?lang=sv or ?lang=en from URL
+            const params = new URLSearchParams(window.location.search);
+            const urlLang = params.get('lang');
+            if (urlLang === 'sv' || urlLang === 'en') {
+                setLanguage(urlLang);
+                return;
+            }
+    
+            // 2) If nothing in URL – use saved selection (same key for both pages)
+            const saved = localStorage.getItem('vj_lang');
+            if (saved === 'sv' || saved === 'en') {
+                setLanguage(saved);
+                return;
+            }
+    
+            // 3) Otherwise – auto from the browser
+            const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            if (browserLang.startsWith('sv')) {
+                setLanguage('sv');
+            } else {
+                setLanguage('en');
+            }
+        })();
+    </script>
 </body>
 </html>
