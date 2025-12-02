@@ -154,10 +154,10 @@
             // Save language selection (same key for both pages)
             localStorage.setItem('vj_lang', lang);
             
-            // Update navigation links with language parameters
+            // Update navigation links with language parameter
             updateNavigationLinks(lang);
         }
-
+    
         function updateNavigationLinks(lang) {
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => {
@@ -170,17 +170,51 @@
                         url.searchParams.set('lang', lang);
                         link.href = url.toString();
                     } else {
-                        // Relative URL - add query parameter
-                        const separator = href.includes('?') ? '&' : '?';
-                        link.href = href + separator + 'lang=' + lang;
+                        // Relative URL - remove any old lang parameter and add new one
+                        const baseUrl = href.split('?')[0];
+                        link.href = baseUrl + '?lang=' + lang;
                     }
                 }
             });
+            
+            // Update link in content if it exists (only in terms.html)
+            const contentLink = document.getElementById('privacy-link-content');
+            if (contentLink) {
+                const href = contentLink.getAttribute('href');
+                if (href && href.includes('privacy.html')) {
+                    const baseUrl = href.split('?')[0];
+                    contentLink.href = baseUrl + '?lang=' + lang;
+                }
+            }
         }
     
         function toggleLanguage() {
             const current = document.documentElement.lang === 'sv' ? 'sv' : 'en';
             setLanguage(current === 'sv' ? 'en' : 'sv');
+        }
+    
+        // Add event listeners to navigation links to ensure language parameter is included
+        function setupNavigationLinks() {
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && (href.includes('privacy.html') || href.includes('terms.html'))) {
+                        // Get current language
+                        const currentLang = document.documentElement.lang === 'sv' ? 'sv' : 'en';
+                        
+                        // Update link with language parameter
+                        if (href.startsWith('http')) {
+                            const url = new URL(href);
+                            url.searchParams.set('lang', currentLang);
+                            this.href = url.toString();
+                        } else {
+                            const baseUrl = href.split('?')[0];
+                            this.href = baseUrl + '?lang=' + currentLang;
+                        }
+                    }
+                });
+            });
         }
     
         // Auto-select language on first visit
@@ -190,6 +224,7 @@
             const urlLang = params.get('lang');
             if (urlLang === 'sv' || urlLang === 'en') {
                 setLanguage(urlLang);
+                setupNavigationLinks();
                 return;
             }
     
@@ -197,16 +232,18 @@
             const saved = localStorage.getItem('vj_lang');
             if (saved === 'sv' || saved === 'en') {
                 setLanguage(saved);
+                setupNavigationLinks();
                 return;
             }
     
-            // 3) Otherwise – auto from the browser
+            // 3) Otherwise – auto from browser
             const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
             if (browserLang.startsWith('sv')) {
                 setLanguage('sv');
             } else {
                 setLanguage('en');
             }
+            setupNavigationLinks();
         })();
     </script>
 </body>
