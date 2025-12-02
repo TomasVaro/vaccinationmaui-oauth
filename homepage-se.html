@@ -310,22 +310,22 @@
         function smartDownload() {
             var ua = navigator.userAgent || navigator.vendor || window.opera;
     
-            // Android → Google Play
+            // Android → Google Play (samma flik är normalt bäst i mobilen)
             if (/android/i.test(ua)) {
+                window.location.href = "https://play.google.com/store/apps/details?id=com.tomasvaro.vaccinationmaui&hl=sv";
+                return false;
+            }
+    
+            // Windows (desktop/laptop) → Microsoft Store i ny flik
+            if (/windows nt/i.test(ua)) {
                 window.open("https://apps.microsoft.com/detail/9pnbz664n9tg?hl=sv-SE&gl=SE", "_blank");
                 return false;
             }
     
-            // Windows (desktop/laptop) → Microsoft Store
-            if (/windows nt/i.test(ua)) {
-                window.location.href = "https://apps.microsoft.com/detail/9pnbz664n9tg?hl=sv-SE&gl=SE";
-                return false;
-            }
-    
-            // Övriga plattformar (iOS, macOS m.m.) – här kan du välja vad som är bäst. Just nu skickar vi till Google Play som "standard".
+            // Övriga plattformar – standard till Google Play
             window.location.href = "https://play.google.com/store/apps/details?id=com.tomasvaro.vaccinationmaui&hl=sv";
             return false;
         }
-    </script>    
+    </script>
 </body>
 </html>
