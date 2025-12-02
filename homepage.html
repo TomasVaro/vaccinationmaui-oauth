@@ -463,12 +463,22 @@
 
         // Auto-välj språk vid första besök
         (function initLanguage() {
+            // 1) Försök läsa ?lang=sv eller ?lang=en från URL
+            const params = new URLSearchParams(window.location.search);
+            const urlLang = params.get('lang');
+            if (urlLang === 'sv' || urlLang === 'en') {
+                setLanguage(urlLang);
+                return;
+            }
+        
+            // 2) Om inget i URL – använd sparat val
             const saved = localStorage.getItem('vj_lang');
             if (saved === 'sv' || saved === 'en') {
                 setLanguage(saved);
                 return;
             }
-
+        
+            // 3) Annars – auto från webbläsaren
             const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
             if (browserLang.startsWith('sv')) {
                 setLanguage('sv');
