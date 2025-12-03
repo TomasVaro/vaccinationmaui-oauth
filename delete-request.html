@@ -72,15 +72,56 @@
   </div>
 
   <script>
-    function toggleLanguage() {
+    function setLanguage(lang) {
       const sv = document.getElementById('sv');
       const en = document.getElementById('en');
       const btn = document.querySelector('.lang-btn');
-
-      sv.classList.toggle('hidden');
-      en.classList.toggle('hidden');
-      btn.textContent = sv.classList.contains('hidden') ? 'Svenska' : 'English';
+  
+      if (lang === 'sv') {
+        sv.classList.remove('hidden');
+        en.classList.add('hidden');
+        btn.textContent = 'English';
+        document.documentElement.lang = 'sv';
+      } else {
+        sv.classList.add('hidden');
+        en.classList.remove('hidden');
+        btn.textContent = 'Svenska';
+        document.documentElement.lang = 'en';
+      }
+  
+      // Save so the same key is used as on the Privacy page
+      localStorage.setItem('vj_lang', lang);
     }
+  
+    function toggleLanguage() {
+      const current = document.documentElement.lang === 'sv' ? 'sv' : 'en';
+      setLanguage(current === 'sv' ? 'en' : 'sv');
+    }
+  
+    (function initLanguage() {
+      // 1) Try reading ?lang=sv or ?lang=en
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang === 'sv' || urlLang === 'en') {
+        setLanguage(urlLang);
+        return;
+      }
+  
+      // 2) If nothing in URL – use saved selection
+      const saved = localStorage.getItem('vj_lang');
+      if (saved === 'sv' || saved === 'en') {
+        setLanguage(saved);
+        return;
+      }
+  
+      // 3) Otherwise – auto from browser
+      const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+      if (browserLang.startsWith('sv')) {
+        setLanguage('sv');
+      } else {
+        setLanguage('en');
+      }
+    })();
   </script>
 </body>
 </html>
