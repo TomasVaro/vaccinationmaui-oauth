@@ -62,22 +62,18 @@
     </style>
 </head>
 <body>
-    <!-- Language-button -->
     <button class="lang-toggle-btn" onclick="toggleLanguage()">English</button>
 
-    <!-- Swedish navigation -->
     <nav class="lang-sv">
         <a href="privacy.html">Integritet</a>
         <a href="terms.html">Användarvillkor</a>
     </nav>
 
-    <!-- English navigation -->
     <nav class="lang-en hidden">
         <a href="privacy.html">Privacy Policy</a>
         <a href="terms.html">Terms of Service</a>
     </nav>
 
-    <!-- Svenskt content -->
     <div class="lang-sv">
         <h1>Integritetspolicy för Vaccinationsjournalen</h1>
         <p>Senast uppdaterad: <strong>12 september 2025</strong></p>
@@ -95,6 +91,9 @@
         <h2>Hur vi använder informationen</h2>
         <p>Vi använder ditt användarnamn och din e-postadress enbart för att identifiera ditt konto och ge dig möjlighet att använda appen. Vi delar inte din information med tredje part.</p>
 
+        <h2>Administratörsåtkomst och support</h2>
+        <p>För support och vid behov av rättelser kan en behörig administratör ha tillgång till din e-postadress samt till dina registrerade personer och vaccinationer. Administratören har aldrig tillgång till ditt lösenord. Uppgifterna används endast för detta ändamål.</p>
+
         <h2>Radering av data</h2>
         <p>Om du väljer att radera ditt konto raderas ditt användarnamn och din e-postadress permanent från vår databas och kan inte återställas.</p>
         <p>Du kan radera ditt konto genom att gå till Inställningar i appen eller genom att fylla i formuläret som du når här:
@@ -107,7 +106,6 @@
              Ansvarig: Tomas Varo</p>
     </div>
 
-    <!-- Engelskt content -->
     <div class="lang-en hidden">
         <h1>Privacy Policy for Vaccination Journal</h1>
         <p>Last updated: <strong>September 12, 2025</strong></p>
@@ -125,6 +123,9 @@
         <h2>How We Use Your Information</h2>
         <p>We use your username and email address solely for the purpose of identifying your account and enabling you to use the app. We do not share your information with third parties.</p>
 
+        <h2>Administrator Access and Support</h2>
+        <p>For support and when corrections are needed, an authorized administrator may have access to your email address as well as your registered persons and vaccinations. The administrator never has access to your password. The data is used only for this purpose.</p>
+
         <h2>Data Deletion</h2>
         <p>If you choose to delete your account, your username and email address are permanently deleted from our database and cannot be recovered.</p>
         <p>You can delete your account through the Settings section in the app or by filling out the form available here:
@@ -135,11 +136,9 @@
         <p>If you have any questions about this Privacy Policy or how your data is handled, you can contact us at:</p>
         <p><a href="mailto:vaccinationsjournalen@gmail.com">vaccinationsjournalen@gmail.com</a><br>
              Owner: Tomas Varo</p>
-      
     </div>
 
     <script>
-        // Language management
         function setLanguage(lang) {
             const svEls = document.querySelectorAll('.lang-sv');
             const enEls = document.querySelectorAll('.lang-en');
@@ -157,10 +156,7 @@
                 document.documentElement.lang = 'en';
             }
     
-            // Save language selection (same key for both pages)
             localStorage.setItem('vj_lang', lang);
-            
-            // Update navigation links with language parameter
             updateNavigationLinks(lang);
         }
     
@@ -169,21 +165,17 @@
             navLinks.forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && (href.includes('privacy.html') || href.includes('terms.html'))) {
-                    // Handle relative links correctly
                     if (href.startsWith('http')) {
-                        // Absolute URL - update query parameter
                         const url = new URL(href);
                         url.searchParams.set('lang', lang);
                         link.href = url.toString();
                     } else {
-                        // Relative URL - remove any old lang parameter and add new one
                         const baseUrl = href.split('?')[0];
                         link.href = baseUrl + '?lang=' + lang;
                     }
                 }
             });
             
-            // Update link in content if it exists (only in terms.html)
             const contentLink = document.getElementById('privacy-link-content');
             if (contentLink) {
                 const href = contentLink.getAttribute('href');
@@ -199,17 +191,13 @@
             setLanguage(current === 'sv' ? 'en' : 'sv');
         }
     
-        // Add event listeners to navigation links to ensure language parameter is included
         function setupNavigationLinks() {
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href && (href.includes('privacy.html') || href.includes('terms.html'))) {
-                        // Get current language
                         const currentLang = document.documentElement.lang === 'sv' ? 'sv' : 'en';
-                        
-                        // Update link with language parameter
                         if (href.startsWith('http')) {
                             const url = new URL(href);
                             url.searchParams.set('lang', currentLang);
@@ -223,9 +211,7 @@
             });
         }
     
-        // Auto-select language on first visit
         (function initLanguage() {
-            // 1) Try reading ?lang=sv or ?lang=en from URL
             const params = new URLSearchParams(window.location.search);
             const urlLang = params.get('lang');
             if (urlLang === 'sv' || urlLang === 'en') {
@@ -234,7 +220,6 @@
                 return;
             }
     
-            // 2) If nothing in URL – use saved selection (same key for both pages)
             const saved = localStorage.getItem('vj_lang');
             if (saved === 'sv' || saved === 'en') {
                 setLanguage(saved);
@@ -242,7 +227,6 @@
                 return;
             }
     
-            // 3) Otherwise – auto from browser
             const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
             if (browserLang.startsWith('sv')) {
                 setLanguage('sv');
