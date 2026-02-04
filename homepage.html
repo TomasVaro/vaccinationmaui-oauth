@@ -246,17 +246,14 @@
         <div class="header-content">
             <img src="https://tomasvaro.github.io/vaccinationmaui-oauth/appicon_splash.png" alt="Vaccination" class="header-image">
 
-            <!-- Språk-knapp -->
             <button class="lang-toggle-btn" onclick="toggleLanguage()">English</button>
 
-            <!-- Svensk header -->
             <div class="header-text lang-sv">
                 <h1>Vaccinationsjournalen</h1>
                 <p>Din digitala översikt över vaccinationer</p>
                 <a href="#" class="download-btn" onclick="return smartDownload();">Ladda ner appen</a>
             </div>
 
-            <!-- Engelsk header -->
             <div class="header-text lang-en hidden">
                 <h1>Vaccination Journal</h1>
                 <p>Your digital overview of vaccinations</p>
@@ -265,7 +262,6 @@
         </div>
     </header>
 
-    <!-- Svenskt innehåll -->
     <div class="lang-sv">
         <div class="container">
             <section class="intro">
@@ -301,7 +297,13 @@
                 <div class="feature-card">
                     <div class="feature-icon">🦠</div>
                     <h3>Sjukdomsinformation</h3>
-                    <p>Sök efter sjukdomar och upptäck vilka vacciner som finns tillgängliga mot dessa.</p>
+                    <p>Sök efter sjukdomar och upptäck vilka vacciner som finns tillgängliga mot dessa. Få dessutom en kort information om dom olika sjukdomarna.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">✈️</div>
+                    <h3>Resevaccinationer</h3>
+                    <p>Sök per land vilka sjukdomar det rekommenderas vaccination mot – även utifrån typ av resa. Få kort information om respektive sjukdom samt se vilka sjukdomar du har skydd mot och vilka du eventuellt behöver fylla på vaccinationen mot. Informationen kan exporteras till PDF och skrivas ut.</p>
                 </div>
 
                 <div class="feature-card">
@@ -336,7 +338,6 @@
         </section>
     </div>
 
-    <!-- Engelskt innehåll -->
     <div class="lang-en hidden">
         <div class="container">
             <section class="intro">
@@ -372,7 +373,13 @@
                 <div class="feature-card">
                     <div class="feature-icon">🦠</div>
                     <h3>Disease information</h3>
-                    <p>Search for diseases and discover which vaccines are available to protect you and your family.</p>
+                    <p>Search for diseases and discover which vaccines are available to protect you. Get brief information about each disease.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">✈️</div>
+                    <h3>Travel vaccinations</h3>
+                    <p>Search by country to see which diseases vaccination is recommended against – including by type of travel. Get brief information about each disease and see which diseases you're protected against and which you may need to top up. Export the information to PDF and print it.</p>
                 </div>
 
                 <div class="feature-card">
@@ -415,13 +422,11 @@
         function smartDownload() {
             var ua = navigator.userAgent || navigator.vendor || window.opera;
 
-            // Android → Google Play
             if (/android/i.test(ua)) {
                 window.location.href = "https://play.google.com/store/apps/details?id=com.tomasvaro.vaccinationmaui&hl=sv";
                 return false;
             }
 
-            // Windows → Microsoft Store in a new tab
             if (/windows nt/i.test(ua)) {
                 window.open(
                     "https://apps.microsoft.com/detail/9pnbz664n9tg?hl=sv-SE&gl=SE",
@@ -430,12 +435,10 @@
                 return false;
             }
 
-            // Other platforms – default to Google Play
             window.location.href = "https://play.google.com/store/apps/details?id=com.tomasvaro.vaccinationmaui&hl=sv";
             return false;
         }
 
-        // Language management
         function setLanguage(lang) {
             const svEls = document.querySelectorAll('.lang-sv');
             const enEls = document.querySelectorAll('.lang-en');
@@ -461,9 +464,7 @@
             setLanguage(current === 'sv' ? 'en' : 'sv');
         }
 
-        // Auto-välj språk vid första besök
         (function initLanguage() {
-            // 1) Försök läsa ?lang=sv eller ?lang=en från URL
             const params = new URLSearchParams(window.location.search);
             const urlLang = params.get('lang');
             if (urlLang === 'sv' || urlLang === 'en') {
@@ -471,14 +472,12 @@
                 return;
             }
         
-            // 2) Om inget i URL – använd sparat val
             const saved = localStorage.getItem('vj_lang');
             if (saved === 'sv' || saved === 'en') {
                 setLanguage(saved);
                 return;
             }
         
-            // 3) Annars – auto från webbläsaren
             const browserLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
             if (browserLang.startsWith('sv')) {
                 setLanguage('sv');
